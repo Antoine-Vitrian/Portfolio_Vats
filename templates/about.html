@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}About Me - Digital Portfolio{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-5">
+                <h1 class="display-4 mb-3">About Me</h1>
+                <div class="user-avatar mb-4">
+                    <i class="fas fa-user-circle fa-5x text-primary"></i>
+                </div>
+            </div>
+            
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <div class="about-content">
+                        {{ about_content|safe|nl2br }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-5">
+                <div class="col-md-4 text-center mb-4">
+                    <div class="card h-100 border-0 bg-light">
+                        <div class="card-body">
+                            <i class="fas fa-code fa-2x text-primary mb-3"></i>
+                            <h5>Full Stack Developer</h5>
+                            <p class="text-muted">Passionate about creating end-to-end solutions</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <div class="card h-100 border-0 bg-light">
+                        <div class="card-body">
+                            <i class="fas fa-lightbulb fa-2x text-warning mb-3"></i>
+                            <h5>Problem Solver</h5>
+                            <p class="text-muted">Love tackling complex challenges with innovative solutions</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <div class="card h-100 border-0 bg-light">
+                        <div class="card-body">
+                            <i class="fas fa-users fa-2x text-success mb-3"></i>
+                            <h5>Team Player</h5>
+                            <p class="text-muted">Enjoy collaborating and sharing knowledge</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <h3>Let's Connect</h3>
+                <p class="text-muted mb-4">Feel free to reach out for collaborations or just to say hello!</p>
+                <div class="social-links">
+                    <a href="#" class="btn btn-outline-dark me-3">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                    <a href="#" class="btn btn-outline-primary me-3">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                    <a href="#" class="btn btn-outline-info">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Digital Portfolio - Home{% endblock %}
+
+{% block content %}
+<div class="hero-section bg-primary text-white py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-3">Welcome to My Portfolio</h1>
+                <p class="lead mb-4">Showcasing innovative projects and technical achievements in software development</p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('projects') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-folder-open"></i> View Projects
+                    </a>
+                    <a href="{{ url_for('about') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-user"></i> About Me
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <i class="fas fa-code display-1 opacity-75"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    {% if featured_projects %}
+    <section class="mb-5">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-4">
+                    <i class="fas fa-star text-warning"></i> Featured Projects
+                </h2>
+            </div>
+        </div>
+        <div class="row">
+            {% for project in featured_projects %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm project-card">
+                    {% if project.image_url %}
+                    <img src="{{ url_for('static', filename=project.image_url) }}" class="card-img-top" alt="{{ project.title }}">
+                    {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-project-diagram fa-3x text-muted"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ project.title }}</h5>
+                        <p class="card-text">{{ project.description[:100] }}{% if project.description|length > 100 %}...{% endif %}</p>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-secondary">{{ project.category.title() }}</span>
+                                <small class="text-muted">
+                                    <i class="fas fa-heart"></i> {{ project.like_count }}
+                                </small>
+                            </div>
+                            <a href="{{ url_for('project_detail', id=project.id) }}" class="btn btn-primary">
+                                View Details <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if recent_projects %}
+    <section class="mb-5">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-4">
+                    <i class="fas fa-clock text-info"></i> Recent Projects
+                </h2>
+            </div>
+        </div>
+        <div class="row">
+            {% for project in recent_projects %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm project-card">
+                    {% if project.image_url %}
+                    <img src="{{ url_for('static', filename=project.image_url) }}" class="card-img-top" alt="{{ project.title }}">
+                    {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-project-diagram fa-3x text-muted"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ project.title }}</h5>
+                        <p class="card-text">{{ project.description[:80] }}{% if project.description|length > 80 %}...{% endif %}</p>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-secondary">{{ project.category.title() }}</span>
+                                <small class="text-muted">
+                                    <i class="fas fa-heart"></i> {{ project.like_count }}
+                                </small>
+                            </div>
+                            <a href="{{ url_for('project_detail', id=project.id) }}" class="btn btn-outline-primary">
+                                View Project
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if not featured_projects and not recent_projects %}
+    <div class="text-center py-5">
+        <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+        <h3 class="text-muted">No projects available yet</h3>
+        <p class="text-muted">Check back soon for exciting projects!</p>
+    </div>
+    {% endif %}
+
+    <!-- Call to Action -->
+    <section class="bg-light rounded p-4 mb-5">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h3>Interested in collaboration?</h3>
+                <p class="mb-0">Feel free to reach out for project discussions or opportunities.</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="{{ url_for('about') }}" class="btn btn-primary">
+                    <i class="fas fa-envelope"></i> Get in Touch
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
