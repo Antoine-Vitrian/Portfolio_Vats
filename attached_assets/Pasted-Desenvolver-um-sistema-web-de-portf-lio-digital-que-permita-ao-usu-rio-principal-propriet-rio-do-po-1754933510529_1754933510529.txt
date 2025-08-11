@@ -1,0 +1,86 @@
+Desenvolver um sistema web de portfólio digital que permita ao usuário principal (proprietário do portfólio) cadastrar e gerenciar suas conquistas, projetos e experiências, apresentando-os de forma organizada e atrativa.
+O sistema deverá contar com recursos para visitantes interagirem, podendo curtir, comentar e compartilhar publicações diretamente no LinkedIn.
+Além disso, será implementada uma área de login para visitantes, permitindo que usuários registrados participem ativamente deixando comentários e feedbacks nos projetos.
+O desenvolvimento deverá ser realizado utilizando a Inteligência Artificial do Replit (Replit AI/Ghostwriter) para gerar, refinar e corrigir o código, além de outras IAs auxiliares (como ChatGPT, Copilot, Gemini, etc.) para apoio no design, organização e documentação do projeto.
+
+Requisitos Mínimos
+Área Administrativa (Proprietário do Portfólio)
+
+
+Cadastro, edição e exclusão de conquistas e projetos.
+
+
+Upload de imagens, vídeos ou links de demonstração.
+
+
+Organização por categorias ou tags.
+
+
+Opção para publicar ou deixar como rascunho.
+
+
+Área Pública (Visitantes)
+
+
+Visualização dos projetos e conquistas.
+
+
+Botão de curtir e contador de curtidas.
+
+
+Campo para comentários (apenas para usuários logados).
+
+
+Botão para compartilhar no LinkedIn com prévia personalizada.
+
+
+Área de Autenticação
+
+
+Cadastro e login de visitantes (nome, e-mail e senha).
+
+
+Recuperação de senha.
+
+
+Perfis com foto e informações básicas.
+
+
+Funcionalidades Extras
+
+
+Sistema de notificação para o proprietário quando um comentário é feito.
+
+
+Seção “Sobre Mim” para apresentação pessoal.
+
+
+Página inicial com destaques (últimos ou mais curtidos projetos).
+
+
+
+Regras de Desenvolvimento
+O código base deverá ser gerado com auxílio da IA do Replit.
+
+
+Ajustes e personalizações poderão ser feitos com apoio de outras IAs.
+
+
+Todo o processo de criação (prompt usado, código gerado, ajustes manuais) deverá ser documentado.
+
+
+Interface responsiva, funcionando em desktop e dispositivos móveis.
+
+
+
+Tecnologias Sugeridas
+Frontend: HTML, CSS, JavaScript (React ou Next.js para mais dinamismo).
+
+
+Backend: Node.js com Express ou Python com Flask/Django.
+
+
+Banco de Dados: MongoDB ou PostgreSQL.
+
+
+Integrações: API do LinkedIn para compartilhamento.
