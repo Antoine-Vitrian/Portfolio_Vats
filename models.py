@@ -106,3 +106,18 @@ class About(db.Model):
             about = cls(content=content)
             db.session.add(about)
         db.session.commit()
+
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    is_read = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Optional: link to specific entities
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # User who triggered the notification
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'))  # Related project
+    comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'))  # Related comment
+    
+    def __repr__(self):
+        return f'<Notification {self.title}>'

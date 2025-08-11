@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Projects - Digital Portfolio{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5 mb-4">My Projects</h1>
+            
+            <!-- Search and Filter Section -->
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Search projects..." 
+                               value="{{ search_term or '' }}" id="project-search">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" 
+                                data-bs-toggle="dropdown">
+                            <i class="fas fa-filter"></i> 
+                            {% if current_category %}
+                                {{ current_category.title() }}
+                            {% else %}
+                                All Categories
+                            {% endif %}
+                        </button>
+                        <ul class="dropdown-menu w-100">
+                            <li><a class="dropdown-item" href="{{ url_for('projects') }}">All Categories</a></li>
+                            {% for category in categories %}
+                            <li>
+                                <a class="dropdown-item {% if current_category == category %}active{% endif %}" 
+                                   href="{{ url_for('projects', category=category) }}">
+                                    {{ category.title() }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if projects %}
+    <div class="row">
+        {% for project in projects %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm project-card">
+                {% if project.image_url %}
+                <img src="{{ url_for('static', filename=project.image_url) }}" 
+                     class="card-img-top" alt="{{ project.title }}">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                     style="height: 200px;">
+                    <i class="fas fa-project-diagram fa-3x text-muted"></i>
+                </div>
+                {% endif %}
+                
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ project.title }}</h5>
+                    <p class="card-text">{{ project.description[:120] }}{% if project.description|length > 120 %}...{% endif %}</p>
+                    
+                    <div class="mt-auto">
+                        <!-- Tags -->
+                        {% if project.get_tags_list() %}
+                        <div class="mb-2">
+                            {% for tag in project.get_tags_list()[:3] %}
+                            <span class="badge bg-light text-dark me-1">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Stats and Actions -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex gap-2">
+                                <span class="badge bg-secondary">{{ project.category.title() }}</span>
+                                {% if project.is_featured %}
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-star"></i> Featured
+                                </span>
+                                {% endif %}
+                            </div>
+                            <div class="d-flex gap-3 text-muted">
+                                <small>
+                                    <i class="fas fa-heart"></i> {{ project.like_count }}
+                                </small>
+                                <small>
+                                    <i class="fas fa-comments"></i> {{ project.comments.count() }}
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('project_detail', id=project.id) }}" 
+                               class="btn btn-primary flex-fill">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                            {% if project.demo_url %}
+                            <a href="{{ project.demo_url }}" target="_blank" 
+                               class="btn btn-outline-success" title="Live Demo">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            {% endif %}
+                            {% if project.github_url %}
+                            <a href="{{ project.github_url }}" target="_blank" 
+                               class="btn btn-outline-dark" title="Source Code">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination would go here if needed -->
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+        <h3 class="text-muted">
+            {% if search_term or current_category %}
+                No projects found
+            {% else %}
+                No projects available yet
+            {% endif %}
+        </h3>
+        <p class="text-muted">
+            {% if search_term or current_category %}
+                Try adjusting your search or filter criteria.
+            {% else %}
+                Check back soon for exciting projects!
+            {% endif %}
+        </p>
+        {% if search_term or current_category %}
+        <a href="{{ url_for('projects') }}" class="btn btn-primary">
+            <i class="fas fa-refresh"></i> Show All Projects
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Live search functionality
+    const searchInput = document.getElementById('project-search');
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    if (searchInput) {
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function() {
+                const searchTerm = searchInput.value;
+                const currentCategory = '{{ current_category or "" }}';
+                
+                let url = '{{ url_for("projects") }}';
+                const params = new URLSearchParams();
+                
+                if (searchTerm) params.append('search', searchTerm);
+                if (currentCategory) params.append('category', currentCategory);
+                
+                if (params.toString()) {
+                    url += '?' + params.toString();
+                }
+                
+                window.location.href = url;
+            }, 800); // Wait 800ms after user stops typing
+        });
+    }
+});
+</script>
+{% endblock %}

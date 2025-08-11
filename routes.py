@@ -4,7 +4,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash
 from app import app, db
-from models import User, Project, Comment, Like, About
+from models import User, Project, Comment, Like, About, Notification
 from forms import LoginForm, RegisterForm, ProjectForm, CommentForm, AboutForm
 
 # Helper function for file uploads
@@ -73,6 +73,17 @@ def project_detail(id):
             project_id=project.id
         )
         db.session.add(comment)
+        
+        # Create notification for admin
+        notification = Notification(
+            title='New Comment',
+            message=f'{current_user.username} commented on "{project.title}"',
+            user_id=current_user.id,
+            project_id=project.id,
+            comment_id=comment.id
+        )
+        db.session.add(notification)
+        
         db.session.commit()
         flash('Comment added successfully!', 'success')
         return redirect(url_for('project_detail', id=id))
@@ -151,6 +162,10 @@ def logout():
     flash('You have been logged out.', 'info')
     return redirect(url_for('index'))
 
+@app.route('/forgot_password')
+def forgot_password():
+    return render_template('auth/forgot_password.html')
+
 # Admin routes
 @app.route('/admin')
 @login_required
@@ -163,17 +178,21 @@ def admin_dashboard():
     published_projects = Project.query.filter_by(is_published=True).count()
     total_comments = Comment.query.count()
     total_likes = Like.query.count()
+    unread_notifications = Notification.query.filter_by(is_read=False).count()
     
     recent_projects = Project.query.order_by(Project.created_at.desc()).limit(5).all()
     recent_comments = Comment.query.order_by(Comment.created_at.desc()).limit(5).all()
+    recent_notifications = Notification.query.order_by(Notification.created_at.desc()).limit(5).all()
     
     return render_template('admin/dashboard.html', 
                          total_projects=total_projects,
                          published_projects=published_projects,
                          total_comments=total_comments,
                          total_likes=total_likes,
+                         unread_notifications=unread_notifications,
                          recent_projects=recent_projects,
-                         recent_comments=recent_comments)
+                         recent_comments=recent_comments,
+                         recent_notifications=recent_notifications)
 
 @app.route('/admin/projects')
 @login_required
@@ -285,3 +304,33 @@ def share_linkedin(id):
     linkedin_url = f"https://www.linkedin.com/sharing/share-offsite/?url={project_url}"
     
     return redirect(linkedin_url)
+
+# Notifications management
+@app.route('/admin/notifications')
+@login_required
+def admin_notifications():
+    if not current_user.is_admin:
+        flash('Access denied.', 'error')
+        return redirect(url_for('index'))
+    
+    notifications = Notification.query.order_by(Notification.created_at.desc()).all()
+    
+    # Mark all as read
+    Notification.query.filter_by(is_read=False).update({'is_read': True})
+    db.session.commit()
+    
+    return render_template('admin/notifications.html', notifications=notifications)
+
+@app.route('/admin/notification/<int:id>/delete', methods=['POST'])
+@login_required
+def admin_delete_notification(id):
+    if not current_user.is_admin:
+        flash('Access denied.', 'error')
+        return redirect(url_for('index'))
+    
+    notification = Notification.query.get_or_404(id)
+    db.session.delete(notification)
+    db.session.commit()
+    
+    flash('Notification deleted successfully!', 'success')
+    return redirect(url_for('admin_notifications'))
